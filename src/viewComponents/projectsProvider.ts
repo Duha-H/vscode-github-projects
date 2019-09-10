@@ -2,6 +2,9 @@ import * as vscode from 'vscode';
 import * as cp from 'child_process';
 import {Project} from './projects';
 
+let github = require('github-api');
+const fetch = require('node-fetch');
+
 export class ProjectsProvider implements vscode.TreeDataProvider<Project> {
 
 	private _onDidChangeTreeData: vscode.EventEmitter<Project | undefined> = new vscode.EventEmitter<Project | undefined>();
@@ -34,6 +37,8 @@ export class ProjectsProvider implements vscode.TreeDataProvider<Project> {
 			let projectName = gitUrl.split('/')[len - 1];
 			let project = new Project(projectName, vscode.TreeItemCollapsibleState.Collapsed);
 			//console.log(projectName);
+			//this.getProjects();
+			//this.getUser();
 			return Promise.resolve([project]);
 		}
 	}
@@ -42,26 +47,6 @@ export class ProjectsProvider implements vscode.TreeDataProvider<Project> {
 		let url = '';
 		let gitConfig : string[] = [];
 
-		/*
-		cp.exec('git config --list', {
-			cwd: this.workspaceRoot
-		}, (err, content) => {
-			if (err) {
-				vscode.window.showErrorMessage('Error obtaining git repository configuration.');
-				console.log('No git url obtained: ', err);
-				return url;
-			}
-			//console.log(content);
-			gitConfig = content.split('\n');
-			gitConfig.forEach((entry) => {
-				if (entry.includes('remote.origin.url')) {
-					url = entry.split('=')[1];
-					//console.log(url);
-					return url;
-				}
-			});
-		});
-		*/
 		gitConfig = cp.execSync('git config --list', {
 				cwd: this.workspaceRoot
 			})
@@ -79,6 +64,35 @@ export class ProjectsProvider implements vscode.TreeDataProvider<Project> {
 		}
 
 		return url;
+	}
+
+	getProjects(url_?: string) : Promise<string> {
+		// TODO: authenticate github user
+		//let url = 'https://github.com/Duha-H/WebGL-project/projects';
+		let url = 'https://api.github.com/repos/Duha-H/WebGL-project/projects';
+		return new Promise((resolve) => {
+			fetch(url, {
+				headers: {
+					'Accept': 'application/vnd.github.inertia-preview+json'
+				}
+			})
+				.then((res: { text: () => void; }) => res.text())
+				.then((body : string) => console.log(body));
+		});
+
+	}
+
+	getUser(): void {
+		var gh = new github();
+		 
+		var clayreimann = gh.getUser('Duha-H');
+		clayreimann.listRepos(function(err: any, repos: any) {
+			if(err) {
+				console.log("error: ", err);
+				return;
+			}
+			console.log(repos);
+		});
 	}
 
 }

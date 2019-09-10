@@ -56,5 +56,9 @@
 		"typescript": "^3.3.1",
 		"tslint": "^5.12.1",
 		"vscode-test": "^1.0.2"
+	},
+	"dependencies": {
+		"github-api": "^3.3.0",
+		"node-fetch": "^2.6.0"
 	}
 }
