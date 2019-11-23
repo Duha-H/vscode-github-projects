@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { ProjectsProvider } from './viewComponents/projectsProvider';
 
+
 export function activate(context: vscode.ExtensionContext) {
 
 	console.log('GithubProjects is now active.');
@@ -25,6 +26,11 @@ export function activate(context: vscode.ExtensionContext) {
 	//const configPath = path.join(rootPath, '.git', 'config');
 	//let contents = fs.readFileSync(configPath, 'utf-8');
 	//console.log(contents);
+
+	vscode.window.showInputBox({
+		ignoreFocusOut: true,
+		placeHolder: 'username, email or fullname'
+	});
 }
 
 export function deactivate() {}

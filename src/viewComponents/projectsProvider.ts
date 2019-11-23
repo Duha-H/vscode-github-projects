@@ -5,6 +5,10 @@ import {Project} from './projects';
 let github = require('github-api');
 const fetch = require('node-fetch');
 
+let tempUser = 'Duha-H';
+let tempURL = 'https://api.github.com/repos/Duha-H/WebGL-project/projects';
+
+
 export class ProjectsProvider implements vscode.TreeDataProvider<Project> {
 
 	private _onDidChangeTreeData: vscode.EventEmitter<Project | undefined> = new vscode.EventEmitter<Project | undefined>();
@@ -36,9 +40,7 @@ export class ProjectsProvider implements vscode.TreeDataProvider<Project> {
 			let len = gitUrl.split('/').length;
 			let projectName = gitUrl.split('/')[len - 1];
 			let project = new Project(projectName, vscode.TreeItemCollapsibleState.Collapsed);
-			//console.log(projectName);
-			//this.getProjects();
-			//this.getUser();
+			
 			return Promise.resolve([project]);
 		}
 	}
@@ -69,7 +71,7 @@ export class ProjectsProvider implements vscode.TreeDataProvider<Project> {
 	getProjects(url_?: string) : Promise<string> {
 		// TODO: authenticate github user
 		//let url = 'https://github.com/Duha-H/WebGL-project/projects';
-		let url = 'https://api.github.com/repos/Duha-H/WebGL-project/projects';
+		let url = tempURL;
 		return new Promise((resolve) => {
 			fetch(url, {
 				headers: {
@@ -85,8 +87,8 @@ export class ProjectsProvider implements vscode.TreeDataProvider<Project> {
 	getUser(): void {
 		var gh = new github();
 		 
-		var clayreimann = gh.getUser('Duha-H');
-		clayreimann.listRepos(function(err: any, repos: any) {
+		var ghUser = gh.getUser(tempUser);
+		ghUser.listRepos(function(err: any, repos: any) {
 			if(err) {
 				console.log("error: ", err);
 				return;
